@@ -1,64 +1,81 @@
-ENTITY RADAR: TACTICAL DASHBOARD
-Aplikasi pemetaan entitas geospasial full-stack yang dirancang dengan antarmuka bergaya Command Center. Sistem ini memungkinkan pengguna untuk memantau, menambahkan, dan mengedit data entitas geografis lengkap dengan koordinatnya secara interaktif—langsung dari kanvas peta.
+# Entity Radar — Tactical Dashboard
 
-LIVE DEMO
-Frontend (Web App): https://map.portofoliorifky.my.id
+![Go](https://img.shields.io/badge/Go-1.20%2B-00ADD8?style=flat-square&logo=go&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![Status](https://img.shields.io/badge/status-in%20development-lightgrey?style=flat-square)
 
-Backend API: https://mapapi.portofoliorifky.my.id
+Aplikasi pemetaan entitas geospasial full-stack dengan antarmuka bergaya command center. Entity Radar memungkinkan pengguna memantau, menambahkan, dan mengedit data entitas geografis lengkap dengan koordinatnya secara interaktif, langsung dari kanvas peta.
 
- TUMPUKAN TEKNOLOGI & ALASAN PEMILIHAN
-Proyek ini dibangun dengan memisahkan arsitektur frontend dan backend secara penuh untuk memastikan modularitas dan skalabilitas.
+## Demo
 
-[ ARSITEKTUR BACKEND ]
+| Layanan | URL |
+|---|---|
+| Frontend (Web App) | [map.portofoliorifky.my.id](https://map.portofoliorifky.my.id) |
+| Backend API | [mapapi.portofoliorifky.my.id](https://mapapi.portofoliorifky.my.id) |
 
-Go (Golang) & Gin Framework: Gin dipilih murni karena performanya. Eksekusinya sangat cepat, konsumsi memorinya kecil, dan routing-nya sangat efisien untuk merancang RESTful API tingkat produksi.
+## Arsitektur
 
-GORM: Dipakai untuk menyederhanakan interaksi dengan pangkalan data dan meminimalisir risiko injeksi SQL melalui ORM yang aman.
+Frontend dan backend dipisah sepenuhnya agar keduanya bisa dikembangkan, di-deploy, dan diskalakan secara independen.
 
-PostgreSQL: Standar industri yang tangguh. Relasional, stabil, dan memiliki dukungan yang sangat baik jika ke depannya proyek ini membutuhkan fungsi spasial tingkat lanjut (seperti PostGIS).
+```
+┌─────────────────────┐        REST API        ┌──────────────────────┐
+│  React + Vite + TS   │ ──────────────────────▶ │   Go (Gin) + GORM     │
+│  Zustand · Leaflet    │ ◀────────────────────── │   PostgreSQL          │
+└─────────────────────┘                          └──────────────────────┘
+```
 
-[ ARSITEKTUR FRONTEND ]
+### Backend
 
-React (Vite) + TypeScript: Vite membuat proses build dan hot-reload menjadi sangat cepat. TypeScript dipakai agar tipe data dari API bisa divalidasi dengan ketat di sisi klien, mencegah banyaknya galat saat runtime.
+| Komponen | Pilihan | Alasan |
+|---|---|---|
+| Framework | Go + Gin | Eksekusi cepat, konsumsi memori kecil, routing efisien untuk RESTful API produksi |
+| ORM | GORM | Menyederhanakan interaksi database dan meminimalkan risiko injeksi SQL |
+| Database | PostgreSQL | Relasional dan stabil, terbuka untuk kebutuhan spasial lanjutan (PostGIS) ke depannya |
 
-Tailwind CSS: Dipilih untuk kelincahan (agility). Memungkinkan pembuatan desain UI kustom yang kompleks (seperti efek glassmorphism di panel) dengan cepat tanpa perlu membuat fail CSS yang saling bertumpuk.
+### Frontend
 
-Zustand: Manajemen state global yang jauh lebih ringan dan minim boilerplate dibandingkan Redux, namun tetap tangguh menangani state peta dan formulir dengan lancar.
+| Komponen | Pilihan | Alasan |
+|---|---|---|
+| Framework | React (Vite) + TypeScript | Build dan hot-reload cepat; tipe data dari API tervalidasi ketat di sisi klien |
+| Styling | Tailwind CSS | Desain kustom kompleks (glassmorphism, dsb.) tanpa file CSS bertumpuk |
+| State | Zustand | Manajemen state global ringan, minim boilerplate, cukup tangguh untuk state peta dan form |
+| Peta | React-Leaflet + Stadia Maps (Alidade Smooth Dark) | Ringan tanpa proses WebGL berat; palet warna sesuai tema radar taktis |
+| Ikon | SVG murni | Seluruh ikon ditulis langsung dengan elemen SVG bawaan, tanpa aset gambar eksternal, sehingga aplikasi memuat lebih cepat |
 
-React-Leaflet & Stadia Maps: Leaflet sangat ringan untuk merender titik koordinat tanpa membebani peramban web dengan proses WebGL yang berat (seperti Mapbox). Peta dasar menggunakan Alidade Smooth Dark dari Stadia Maps karena palet warnanya sangat sesuai dengan tema radar taktis.
+## Menjalankan Secara Lokal
 
-Pure SVG UI: Seluruh ikon (pada sistem Toast, tombol, dan marker radar) ditulis murni menggunakan elemen  dan  bawaan HTML/Tailwind. Tidak ada penggunaan aset gambar eksternal, sehingga aplikasi memuat lebih cepat tanpa beban permintaan HTTP ekstra.
+Prasyarat: Go 1.20+, Node.js 18+, PostgreSQL.
 
- PANDUAN INSTALASI & EKSEKUSI LOKAL
-Pastikan komputermu sudah terpasang Go (v1.20+), Node.js (v18+), dan PostgreSQL.
+**1. Setup database**
 
-TAHAP 1: SETUP DATABASE
-Buat sebuah pangkalan data kosong di PostgreSQL, misalnya "entity_map_db".
+Buat database kosong di PostgreSQL, misalnya `entity_map_db`.
 
-TAHAP 2: JALANKAN BACKEND
-Masuk ke dalam folder backend, sesuaikan konfigurasi kredensial basis data di dalam kode (atau via .env jika digunakan), lalu eksekusi perintah terminal berikut:
+**2. Jalankan backend**
 
+```bash
 cd backend
 go mod tidy
 go run main.go
-(Backend akan berjalan di porta 8085)
+```
 
-TAHAP 3: JALANKAN FRONTEND
-Buka tab terminal baru, masuk ke folder frontend, dan jalankan peladen pengembangan lokal:
+Backend berjalan di port `8085`. Sesuaikan kredensial database di konfigurasi kode atau file `.env` sebelum menjalankan.
 
+**3. Jalankan frontend**
+
+```bash
 cd frontend
 npm install
 npm run dev
-(Frontend dapat diakses melalui peramban di http://localhost:5173)
+```
 
- TRANSPARANSI & KETERBATASAN FUNGSIONAL
-Sebagai bentuk kejujuran teknis dan bahan evaluasi rekayasa perangkat lunak, berikut adalah beberapa batasan pada sistem saat ini yang belum beroperasi 100% sempurna:
+Frontend dapat diakses di `http://localhost:5173`.
 
-Akurasi Radius Spasial (Geofencing)
-Visualisasi lingkaran biru (radius) pada penanda peta saat ini murni menggunakan manipulasi DOM dari bawaan Leaflet. Peladen (backend) belum mengimplementasikan kalkulasi spasial atau batasan wilayah yang presisi menggunakan algoritma Haversine untuk menyaring entitas berdasarkan zona.
+## Keterbatasan Saat Ini
 
-Sinkronisasi Real-Time State
-Klien masih mengandalkan mekanisme pengambilan data (polling) manual melalui antarmuka. Karena sistem belum mengadopsi protokol komunikasi dua arah seperti WebSockets (WSS) atau Server-Sent Events (SSE), pembaruan data yang terjadi langsung dari luar basis data hanya akan direfleksikan setelah halaman web dimuat ulang.
+Beberapa hal yang belum berjalan 100% sempurna, dicatat di sini sebagai bahan evaluasi dan transparansi teknis:
 
-Resiliensi Jaringan (Offline Mode)
-Penyimpanan state saat ini (Zustand) bersifat in-memory. Aplikasi belum didukung oleh Service Workers atau penyimpanan persisten peramban (IndexedDB). Jika koneksi jaringan terputus secara tiba-tiba, perubahan draft pada form tidak akan tersimpan dan aplikasi tidak dapat beroperasi dalam mode luring (offline).
+- **Akurasi radius geofencing** — lingkaran radius pada marker saat ini murni manipulasi DOM dari Leaflet. Backend belum menghitung batas wilayah secara presisi menggunakan algoritma Haversine.
+- **Sinkronisasi real-time** — klien masih mengandalkan polling manual. Belum ada WebSocket atau SSE, sehingga perubahan data dari luar baru terlihat setelah halaman dimuat ulang.
+- **Mode offline** — state Zustand bersifat in-memory tanpa Service Worker atau IndexedDB. Jika koneksi terputus, draft form yang belum disimpan akan hilang dan aplikasi tidak bisa dipakai secara luring.
