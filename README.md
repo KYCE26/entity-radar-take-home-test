@@ -48,7 +48,6 @@ cd backend
 go mod tidy
 go run main.go
 
-
 Backend akan berjalan di port 8085.
 
 3. Jalankan Frontend
@@ -59,9 +58,19 @@ cd frontend
 npm install
 npm run dev
 
-
 Frontend bisa diakses melalui browser di http://localhost:5173.
 
 Catatan Fungsional
 
 Aplikasi ini sudah mendukung Cross-Origin Resource Sharing (CORS) dinamis untuk lingkungan lokal maupun deployment produksi di balik reverse proxy.
+
+## <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align:middle; margin-right:8px; color:#eab308;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Transparansi & Keterbatasan Fungsional
+
+Sebagai bentuk kejujuran teknis dan evaluasi rekayasa, berikut adalah beberapa batasan pada sistem saat ini yang belum beroperasi 100% sempurna:
+
+1. **Akurasi Radius Spasial (Geofencing)**
+   Visualisasi lingkaran biru (radius) pada penanda peta saat ini murni menggunakan manipulasi DOM dari bawaan Leaflet. Peladen (_backend_) belum mengimplementasikan kalkulasi spasial atau batasan wilayah yang presisi menggunakan algoritma Haversine untuk menyaring entitas berdasarkan zona.
+2. **Sinkronisasi Real-Time State**
+   Klien mengandalkan mekanisme _polling_ manual melalui antarmuka. Karena sistem belum mengadopsi protokol WebSockets (WSS) atau Server-Sent Events (SSE), pembaruan data yang terjadi langsung dari luar basis data hanya akan direfleksikan setelah halaman web dimuat ulang.
+3. **Resiliensi Jaringan (Offline Mode)**
+   Penyimpanan state saat ini (Zustand) bersifat _in-memory_. Aplikasi belum didukung oleh _Service Workers_ atau IndexedDB. Jika koneksi terputus tiba-tiba, perubahan _draft_ pada form tidak tersimpan dan aplikasi tidak dapat beroperasi dalam mode luring (_offline_).
